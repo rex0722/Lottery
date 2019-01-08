@@ -34,8 +34,6 @@
             this.labSelectTimes = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
-            this.timerChangeColor = new System.Windows.Forms.Timer(this.components);
-            this.timerLottery = new System.Windows.Forms.Timer(this.components);
             this.combPrize = new System.Windows.Forms.ComboBox();
             this.btnList = new System.Windows.Forms.Button();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -43,6 +41,8 @@
             this.CloseProgramToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.combCount = new System.Windows.Forms.ComboBox();
             this.labAuthor = new System.Windows.Forms.Label();
+            this.timerLottery = new System.Windows.Forms.Timer(this.components);
+            this.timerChangeColor = new System.Windows.Forms.Timer(this.components);
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -88,14 +88,6 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Visible = false;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
-            // 
-            // timerChangeColor
-            // 
-            this.timerChangeColor.Tick += new System.EventHandler(this.timerChangeColor_Tick);
-            // 
-            // timerLottery
-            // 
-            this.timerLottery.Tick += new System.EventHandler(this.timerLottery_Tick);
             // 
             // combPrize
             // 
@@ -158,6 +150,14 @@
             this.labAuthor.Size = new System.Drawing.Size(0, 12);
             this.labAuthor.TabIndex = 10;
             // 
+            // timerLottery
+            // 
+            this.timerLottery.Tick += new System.EventHandler(this.timerLottery_Tick);
+            // 
+            // timerChangeColor
+            // 
+            this.timerChangeColor.Tick += new System.EventHandler(this.timerChangeColor_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -179,6 +179,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "x";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Enter += new System.EventHandler(this.btnStart_Click);
             this.contextMenu.ResumeLayout(false);
@@ -193,8 +194,6 @@
         private System.Windows.Forms.Label labSelectTimes;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnReset;
-        private System.Windows.Forms.Timer timerChangeColor;
-        private System.Windows.Forms.Timer timerLottery;
         private System.Windows.Forms.ComboBox combPrize;
         private System.Windows.Forms.Button btnList;
         private System.Windows.Forms.ContextMenuStrip contextMenu;
@@ -202,6 +201,8 @@
         private System.Windows.Forms.ComboBox combCount;
         private System.Windows.Forms.Label labAuthor;
         private System.Windows.Forms.ToolStripMenuItem CloseProgramToolStripMenuItem1;
+        private System.Windows.Forms.Timer timerLottery;
+        private System.Windows.Forms.Timer timerChangeColor;
     }
 }
 

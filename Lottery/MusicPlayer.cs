@@ -28,11 +28,11 @@ namespace Lottery
         //結構變數
         public struct structMCI
         {
-            public bool bMut;
-            public int iDur;
+            //public bool bMut;
+            //public int iDur;
             public int iPos;
-            public int iVol;
-            public int iBal;
+            //public int iVol;
+            //public int iBal;
             public string iName;
             public State state;
         };

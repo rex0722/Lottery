@@ -19,7 +19,7 @@ namespace Lottery
 {
     public partial class MainForm : Form
     {
-        bool isFirst = true, isFirstRound = true;
+        bool isFirst = true, isFirstRound = true, isSocketCreate = false;
 
         const int firstTop = 1001, firstRight = 1002, firstBottom = 1003, firstLeft = 1004;
         const int secondTop = 2001, secondRight = 2002, secondBottom = 2003, secondLeft = 2004;
@@ -50,9 +50,6 @@ namespace Lottery
         Socket serverSocket;
         IPAddress[] ips = Dns.GetHostAddresses("");
 
-        System.Timers.Timer t_ChangeColor, t_Lottery;
-
-
         public MainForm()
         {
             InitializeComponent();
@@ -70,20 +67,65 @@ namespace Lottery
             selectingSoundOutput();
             labelCreate();
             winnerMessage.ShowDialog();
-            timerLoad();
             Control.CheckForIllegalCrossThreadCalls = false;
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
         private void OpenControlToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            IPEndPoint ipont = new IPEndPoint(IPAddress.Any, listenPort);
-            serverSocket.Bind(ipont);
-            serverSocket.Listen(10);
+            if (!isSocketCreate)
+            {
+                IPEndPoint ipont = new IPEndPoint(IPAddress.Any, listenPort);
+                serverSocket.Bind(ipont);
+                serverSocket.Listen(10);
 
-            new Thread(new ThreadStart(serverWaitConnect)).Start();
+                new Thread(new ThreadStart(serverWaitConnect)).Start();
+                isSocketCreate = true;
+            }
+
             MessageBox.Show(Strings.ipAddress + ips[3].ToString() + Strings.nextLine + Strings.socketServiceTurnOnSuccess, 
                 Strings.messageBoxInformationTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void timerLottery_Tick(object sender, EventArgs e)
+        {
+            timerChangeColor.Stop();
+            timerLottery.Stop();
+            timerLottery.Enabled = false;
+            timerChangeColor.Enabled = false;
+            totalParticipant--;
+            lotteryCount--;
+            tempTagWinner.Add(labelSet[selectItem[currentID]]);
+            recordWinner.Add(labelSet[selectItem[currentID]].Text);
+
+            if (lotteryCount > 0)
+            {
+                labelSet[selectItem[currentID]].BackColor = Color.White;
+                selectedFinish();
+                timerLottery.Enabled = true;
+                timerChangeColor.Enabled = true;
+                timerLottery.Start();
+                timerChangeColor.Start();
+                combCount.Text = lotteryCount.ToString();
+            }
+            else
+            {
+                dataInsert();
+                btnStart.Enabled = true;
+                btnStart.Focus();
+                winnerMessage.winnerList = recordWinner;
+                winnerMessage.ShowDialog();
+                recordWinner.Clear();
+            }
+        }
+
+        private void timerChangeColor_Tick(object sender, EventArgs e)
+        {
+            Random random = new Random();
+            currentID = random.Next(0, totalParticipant);
+            labelSet[selectItem[perviousID]].BackColor = Color.Gray;
+            labelSet[selectItem[currentID]].BackColor = Color.White;
+            perviousID = currentID;
         }
 
         private void CloseProgramToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -109,45 +151,6 @@ namespace Lottery
         private void btnStart_Click(object sender, EventArgs e)
         {
             lotteryFunction();
-        }
-
-        private void timerLottery_Tick(object sender, EventArgs e)
-        {
-            Console.WriteLine("YABE----- timerLottery_Tick on!");
-            timerChangeColor.Stop();
-            timerLottery.Stop();
-            totalParticipant--;
-            lotteryCount--;
-            tempTagWinner.Add(labelSet[selectItem[currentID]]);
-            recordWinner.Add(labelSet[selectItem[currentID]].Text);
-
-            if(lotteryCount > 0)
-            {
-                labelSet[selectItem[currentID]].BackColor = Color.White;
-                selectedFinish();
-                timerLottery.Start();
-                timerChangeColor.Start();
-                combCount.Text = lotteryCount.ToString();
-            }
-            else
-            {
-                dataInsert();
-                btnStart.Enabled = true;
-                btnStart.Focus(); 
-                winnerMessage.winnerList = recordWinner;
-                winnerMessage.ShowDialog();
-                recordWinner.Clear();
-            }
-        }
-
-        private void timerChangeColor_Tick(object sender, EventArgs e)
-        {
-            Console.WriteLine("YABE----- timerChangeColor_Tick on!");
-            Random random = new Random();
-            currentID = random.Next(0, totalParticipant);
-            labelSet[selectItem[perviousID]].BackColor = Color.Gray;
-            labelSet[selectItem[currentID]].BackColor = Color.White;
-            perviousID = currentID;
         }
 
         private void labelCreate()
@@ -266,42 +269,6 @@ namespace Lottery
                 panel.Controls.Add(labelSet[i]);
                 selectItem.Add(i);
             }
-        }
-
-        private void startLottery()
-        {
-            Console.WriteLine("YABE----- startLottery on!");
-            
-            if (totalParticipant <= 1)
-            {
-                MessageBox.Show(Strings.lotteryError1, Strings.messageBoxWarningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Console.WriteLine("YABE----- startLottery , 275");
-            }
-            else if (lotteryCount >= totalParticipant)
-            {
-                Console.WriteLine("YABE----- startLottery , 279");
-                MessageBox.Show(Strings.lotteryError2, Strings.messageBoxWarningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-            else {
-                Console.WriteLine("YABE----- startLottery , 283");
-                if (isFirst)
-                    isFirst = false;
-                else
-                {
-                    tagWinner(tempTagWinner);
-                    selectedFinish();
-                }
-
-                Console.WriteLine("YABE----- startLottery , 292");
-                Random time = new Random();
-                t_Lottery.Interval = (time.Next(0, 4) + 2) * 1000;
-                t_Lottery.Start();
-                t_ChangeColor.Start();
-                btnStart.Enabled = false;
-                perviousPrizeItem = combPrize.Text;
-                Console.WriteLine("YABE----- startLottery , 299");
-            }
-            
         }
 
         public void reset()
@@ -486,8 +453,6 @@ namespace Lottery
 
         public void lotteryFunction()
         {
-            Console.WriteLine("YABE----- lotteryFunction on!");
-
             lotteryCount = int.Parse(combCount.Text);
 
             if (isFirst && !isDatabaseEmpty())
@@ -516,70 +481,52 @@ namespace Lottery
             }
         }
 
+        private void startLottery()
+        {
+
+            if (totalParticipant <= 1)
+            {
+                MessageBox.Show(Strings.lotteryError1, Strings.messageBoxWarningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else if (lotteryCount >= totalParticipant)
+            {
+                MessageBox.Show(Strings.lotteryError2, Strings.messageBoxWarningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+                if (isFirst)
+                    isFirst = false;
+                else
+                {
+                    tagWinner(tempTagWinner);
+                    selectedFinish();
+                }
+
+                Random time = new Random();
+
+                timerLottery.Interval = (time.Next(0, 4) + 2) * 1000;
+                timerLottery.Start();
+                timerChangeColor.Start();
+
+                btnStart.Enabled = false;
+                perviousPrizeItem = combPrize.Text;
+            }
+
+        }
+
         private void serverWaitConnect()
         {
             while (true)
             {
-                Console.WriteLine("Waiting...connect");
+                Console.WriteLine("Waiting...Connect");
                 Socket clientSocket = serverSocket.Accept();
                 IPEndPoint clientip = (IPEndPoint)clientSocket.RemoteEndPoint;
                 
-               
                 SocketListener listener = new SocketListener(clientSocket);
-                listener.startLotteryCallback += new SocketListener.startLotteryDelegate(this.lotteryFunction);
                 new Thread(new ThreadStart(listener.run)).Start();
             }
 
         }
 
-        private void timerLoad()
-        {
-            t_ChangeColor = new System.Timers.Timer();
-            t_ChangeColor.Interval = 100;
-            t_ChangeColor.Elapsed += T_ChangeColor_Elapsed; ;
-
-            t_Lottery = new System.Timers.Timer();
-            t_Lottery.Interval = 100;
-            t_Lottery.Elapsed += T_Lottery_Elapsed;
-        }
-
-        private void T_ChangeColor_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            Console.WriteLine("YABE----- T_ChangeColor_Elapsed on!");
-            Random random = new Random();
-            currentID = random.Next(0, totalParticipant);
-            labelSet[selectItem[perviousID]].BackColor = Color.Gray;
-            labelSet[selectItem[currentID]].BackColor = Color.White;
-            perviousID = currentID;
-        }
-
-        private void T_Lottery_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            Console.WriteLine("YABE----- T_Lottery_Elapsed on!");
-            t_ChangeColor.Stop();
-            t_Lottery.Stop();
-            totalParticipant--;
-            lotteryCount--;
-            tempTagWinner.Add(labelSet[selectItem[currentID]]);
-            recordWinner.Add(labelSet[selectItem[currentID]].Text);
-
-            if (lotteryCount > 0)
-            {
-                labelSet[selectItem[currentID]].BackColor = Color.White;
-                selectedFinish();
-                t_Lottery.Start();
-                t_ChangeColor.Start();
-                combCount.Text = lotteryCount.ToString();
-            }
-            else
-            {
-                dataInsert();
-                btnStart.Enabled = true;
-                btnStart.Focus();
-                winnerMessage.winnerList = recordWinner;
-                winnerMessage.ShowDialog();
-                recordWinner.Clear();
-            }
-        }
     }
 }

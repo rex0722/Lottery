@@ -11,7 +11,6 @@ namespace Lottery
     {
         private Socket socket;
         public delegate void startLotteryDelegate();
-        public event startLotteryDelegate startLotteryCallback;
 
         public SocketListener(Socket socket)
         {
@@ -30,10 +29,12 @@ namespace Lottery
                 if (input.Equals("start"))
                 {
                     Console.WriteLine("Lottery Start!!" + input);
-                    startLotteryCallback();
+                    startLotteryDelegate sld = new startLotteryDelegate(MainForm.mainForm.lotteryFunction);
+                    MainForm.mainForm.BeginInvoke(sld);
                 }
                     
                 Console.WriteLine("Get Message:" + input);
+                
             }
             socket.Close();
         }
