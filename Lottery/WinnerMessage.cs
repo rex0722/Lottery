@@ -34,9 +34,11 @@ namespace Lottery
             }
             else
                 MainForm.selectedFinishSoundOutput();
+
             initialUnit();
             for (int i = 0; i < winnerList.Count; i++)
                 labWinner.Text += winnerList[i] + Strings.nextLine;
+
             winnerList.Clear();
         }
 
@@ -62,14 +64,22 @@ namespace Lottery
             label1.Location = new Point(Convert.ToInt32(this.Width * 0.121), Convert.ToInt32(this.Height * 0.14));
             label2.Location = new Point(Convert.ToInt32(this.Width * 0.73), Convert.ToInt32(this.Height * 0.5));
             labWinner.Location = new Point(Convert.ToInt32(this.Width * 0.3), Convert.ToInt32(this.Height * 0.28));
+
+            btnClose.Location = new Point(this.Width, this.Height);
         }
 
         private void picBoxBack_Click(object sender, EventArgs e)
         {
             this.Close();
             labWinner.Text = "";
-            MainForm.selectingSoundOutput();
+            MainForm.backgroundSoundOutput();
         }
 
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            labWinner.Text = "";
+            MainForm.backgroundSoundOutput();
+        }
     }
 }

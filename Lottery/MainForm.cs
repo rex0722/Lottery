@@ -19,7 +19,7 @@ namespace Lottery
 {
     public partial class MainForm : Form
     {
-        bool isFirst = true, isFirstRound = true, isSocketCreate = false;
+        bool isFirst = true, isFirstRound = true, isSocketCreate = false, isLotteryRunning = false;
 
         const int firstTop = 1001, firstRight = 1002, firstBottom = 1003, firstLeft = 1004;
         const int secondTop = 2001, secondRight = 2002, secondBottom = 2003, secondLeft = 2004;
@@ -56,7 +56,7 @@ namespace Lottery
         }
 
         private void MainForm_Load(object sender, EventArgs e)
-        {          
+        {
             mainForm = this;
             initialUnitSetting();
             initialSize();
@@ -64,14 +64,19 @@ namespace Lottery
             loadComboboxData();
             initialUnitFont();
             initialUnitLocation();
-            selectingSoundOutput();
+            backgroundSoundOutput();
             labelCreate();
             winnerMessage.ShowDialog();
             Control.CheckForIllegalCrossThreadCalls = false;
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
-        private void OpenControlToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Environment.Exit(Environment.ExitCode);
+        }
+
+        private void InternetControlMenuItem_Click(object sender, EventArgs e)
         {
             if (!isSocketCreate)
             {
@@ -83,8 +88,19 @@ namespace Lottery
                 isSocketCreate = true;
             }
 
-            MessageBox.Show(Strings.ipAddress + ips[3].ToString() + Strings.nextLine + Strings.socketServiceTurnOnSuccess, 
+            MessageBox.Show(Strings.ipAddress + ips[3].ToString() + Strings.nextLine + Strings.socketServiceTurnOnSuccess,
                 Strings.messageBoxInformationTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void CloseProgramMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(Strings.turnOffLotteryProgram, Strings.messageBoxInformationTitle,
+            MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (result == DialogResult.OK)
+            {
+                this.Close();
+                Environment.Exit(Environment.ExitCode);
+            }
         }
 
         private void timerLottery_Tick(object sender, EventArgs e)
@@ -112,10 +128,10 @@ namespace Lottery
             {
                 dataInsert();
                 btnStart.Enabled = true;
-                btnStart.Focus();
                 winnerMessage.winnerList = recordWinner;
                 winnerMessage.ShowDialog();
                 recordWinner.Clear();
+                isLotteryRunning = false;
             }
         }
 
@@ -126,20 +142,6 @@ namespace Lottery
             labelSet[selectItem[perviousID]].BackColor = Color.Gray;
             labelSet[selectItem[currentID]].BackColor = Color.White;
             perviousID = currentID;
-        }
-
-        private void CloseProgramToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            DialogResult result = MessageBox.Show(Strings.turnOffLotteryProgram, Strings.messageBoxInformationTitle, 
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-            if (result == DialogResult.OK)
-                this.Close();
-        }
-
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-            ResetMessageBox rmb = new ResetMessageBox();
-            rmb.Show();
         }
 
         private void btnList_Click(object sender, EventArgs e)
@@ -271,29 +273,6 @@ namespace Lottery
             }
         }
 
-        public void reset()
-        {       
-            offsetX = 0;
-            offsetY = 0;
-            rowCount = 0;
-            perviousID = 0;
-            currentID = 0;
-            lotteryCount = 0;
-            heightInterval = 10;
-            widthInterval = 25;
-            totalParticipant = 100;
-            isFirst = true;
-            isFirstRound = true;
-            currentSide = firstTop;
-            selectItem.Clear();
-            tempTagWinner.Clear();
-            recordWinner.Clear();
-            panel.Controls.Clear();
-            initailX = Convert.ToInt32(this.Width * 0.203);
-            initailY = Convert.ToInt32(this.Height * 0.035);
-            labelCreate();
-        }
-
         private void tagWinner(List<Label> list)
         {
             for(int i = 0; i < list.Count; i++) 
@@ -310,10 +289,17 @@ namespace Lottery
             }
         }
 
-        public static void selectingSoundOutput()
+        public static void backgroundSoundOutput()
         {
             MusicPlayer musicPlayer = new MusicPlayer();
             musicPlayer.FileName = Strings.normalBackgroundMusic;
+            musicPlayer.Play();
+        }
+
+        public static void selectingSoundOutput()
+        {
+            MusicPlayer musicPlayer = new MusicPlayer();
+            musicPlayer.FileName = Strings.selectingBackgroundMusic;
             musicPlayer.Play();
         }
 
@@ -396,8 +382,9 @@ namespace Lottery
             labAuthor.Text = Strings.author;
             labAuthor.Parent = panel;
             labAuthor.BackColor = Color.Transparent;
+            labAuthor.ForeColor = Color.Gold;         
 
-            btnStart.Focus();
+            picLeft.Parent = panel;
         }
 
         private void initialUnitFont()
@@ -406,7 +393,6 @@ namespace Lottery
             labSelectTimes.Font = FontSet.getLabelFontStyle();
             combCount.Font = FontSet.getTxtFontStyle();
             btnStart.Font = FontSet.getBtnFontStyle();
-            btnReset.Font = FontSet.getBtnFontStyle();
             btnList.Font = FontSet.getBtnFontStyle();
             labAuthor.Font = FontSet.getAuthorLabFontStyle();
         }
@@ -419,8 +405,8 @@ namespace Lottery
             combPrize.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.35));
             btnStart.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.40));
             btnList.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.53));
-            btnReset.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.75));
-            labAuthor.Location = new Point(Convert.ToInt32(panelWidth * 0.87), Convert.ToInt32(panelHeight * 0.97));
+            labAuthor.Location = new Point(Convert.ToInt32(panelWidth * 0.28), Convert.ToInt32(panelHeight * 0.45));
+            picLeft.Location = new Point(Convert.ToInt32(panelWidth * 0.02), Convert.ToInt32(panelHeight * 0.5));
         }
 
         private void initialSize()
@@ -447,8 +433,8 @@ namespace Lottery
             btnStart.Height = Convert.ToInt32(Convert.ToDouble(btnStart.Height) * diameterHeight);
             btnList.Width = Convert.ToInt32(Convert.ToDouble(btnList.Width) * diameterWidth);
             btnList.Height = Convert.ToInt32(Convert.ToDouble(btnList.Height) * diameterHeight);
-            btnReset.Width = Convert.ToInt32(Convert.ToDouble(btnReset.Width) * diameterWidth);
-            btnReset.Height = Convert.ToInt32(Convert.ToDouble(btnReset.Height) * diameterHeight);
+            picLeft.Width = Convert.ToInt32(Convert.ToDouble(picLeft.Width) * diameterWidth);
+            picLeft.Height = Convert.ToInt32(Convert.ToDouble(picLeft.Height) * diameterHeight);
         }
 
         public void lotteryFunction()
@@ -509,7 +495,9 @@ namespace Lottery
                 timerChangeColor.Start();
 
                 btnStart.Enabled = false;
+                isLotteryRunning = true;
                 perviousPrizeItem = combPrize.Text;
+                selectingSoundOutput();
             }
 
         }
@@ -518,12 +506,17 @@ namespace Lottery
         {
             while (true)
             {
-                Console.WriteLine("Waiting...Connect");
+                Console.WriteLine("Waiting for Mobile Phone Connect...");
                 Socket clientSocket = serverSocket.Accept();
                 IPEndPoint clientip = (IPEndPoint)clientSocket.RemoteEndPoint;
-                
-                SocketListener listener = new SocketListener(clientSocket);
-                new Thread(new ThreadStart(listener.run)).Start();
+
+                if (!isLotteryRunning)
+                {
+                    SocketListener listener = new SocketListener(clientSocket);
+                    new Thread(new ThreadStart(listener.run)).Start();
+                }
+                else
+                    clientSocket.Close();
             }
 
         }

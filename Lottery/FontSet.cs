@@ -65,7 +65,7 @@ namespace Lottery
 
         public static Font getAuthorLabFontStyle()
         {
-            authorLabFontStyle = new Font(prc.Families[0], 16 * fontDiameter, FontStyle.Bold);
+            authorLabFontStyle = new Font(prc.Families[0], 32 * fontDiameter, FontStyle.Bold);
             return authorLabFontStyle;
         }
 

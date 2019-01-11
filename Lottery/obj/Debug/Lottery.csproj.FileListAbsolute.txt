@@ -43,7 +43,9 @@ C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3\Lottery\bin\Debug\
 C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3\Lottery\obj\Debug\Lottery.csprojResolveAssemblyReference.cache
 C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3\Lottery\obj\Debug\Lottery.MainForm.resources
 C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3\Lottery\obj\Debug\Lottery.Properties.Resources.resources
-C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3\Lottery\obj\Debug\Lottery.ResetMessageBox.resources
 C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3\Lottery\obj\Debug\Lottery.WinnerList.resources
 C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3\Lottery\obj\Debug\Lottery.WinnerMessage.resources
 C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3\Lottery\obj\Debug\Lottery.csproj.GenerateResource.Cache
+C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3.1\Lottery\bin\Debug\Lottery.exe.config
+C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3.1\Lottery\obj\Debug\Lottery.exe
+C:\Users\Rex\Documents\Visual Studio 2015\Projects\Lottery_V3.1\Lottery\obj\Debug\Lottery.pdb

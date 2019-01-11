@@ -33,6 +33,7 @@
             this.labWinner = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.picBoxBack = new System.Windows.Forms.PictureBox();
+            this.btnClose = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picBoxBack)).BeginInit();
             this.SuspendLayout();
             // 
@@ -79,12 +80,24 @@
             this.picBoxBack.TabStop = false;
             this.picBoxBack.Click += new System.EventHandler(this.picBoxBack_Click);
             // 
+            // btnClose
+            // 
+            this.btnClose.Location = new System.Drawing.Point(613, 465);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.TabIndex = 4;
+            this.btnClose.Text = "Close";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
             // WinnerMessage
             // 
+            this.AcceptButton = this.btnClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(700, 500);
+            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.picBoxBack);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.labWinner);
@@ -107,5 +120,6 @@
         private System.Windows.Forms.Label labWinner;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox picBoxBack;
+        private System.Windows.Forms.Button btnClose;
     }
 }

@@ -34,10 +34,9 @@ namespace Lottery
 
         public static string[] lotteryCountList = new string[5]{"1", "2", "3", "4", "5"};
 
-        public static string one = "1";
         public static string nextLine = "\n";
         public static string label = "label";
-        public static string author = "Designed by Rex && Ian";
+        public static string author = "Powered by ETVG RD4 SW Rex && Ian && Jim(App)";
 
         public static string databasePath = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source= ../../Record.mdb";
         public static string selectCommand = "SELECT 獎項,中獎人 FROM record";
@@ -55,18 +54,18 @@ namespace Lottery
         public static string turnOnBackgrounMusic = "開啟背景音效";
         public static string turnOffBackgrounMusic = "停止背景音效";
         public static string normalBackgroundMusic = "../../Music/Happy.mp3";
+        public static string selectingBackgroundMusic = "../../Music/Beat.mp3";
         public static string winnerBackgroundMusic = "../../Music/Colonel_Bogey_March.mp3";
 
         public static string turnOffLotteryProgram = "確定要關閉抽獎程式?";
-        public static string lotteryError1 = "可抽獎人數剩 1 位\n不需要抽獎了唷！";
-        public static string lotteryError2 = "抽獎次數不符合可抽獎的人數了！";
-        public static string lotteryError3 = "抽獎次數請不要超過 5 次！";
-        public static string lotteryError4 = "請輸入正確的抽獎次數!";
+        public static string lotteryError1 = "可抽獎人數剩 1 位\n不需要抽獎了！";
+        public static string lotteryError2 = "抽獎次數大於可抽獎的人數了！";
 
         public static string prizeItemsDuplicate = "已經抽過了\n是否再抽一次?";
         public static string resetList = "中獎名單內已有先前紀錄，開始抽獎會將先前紀錄清除\n請問是否開始抽獎?";
 
-        public static string ipAddress = "本機的 IP 地址為: ";
+        public static string ipAddress = "本機的 IP 位址為: ";
         public static string socketServiceTurnOnSuccess = "遠端控制功能已成功開啟！";
+        public static string start_lottery_keyword = "start";
     }
 }
