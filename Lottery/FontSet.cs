@@ -12,7 +12,7 @@ namespace Lottery
     {
         static PrivateFontCollection prc = new PrivateFontCollection();
         static Font lotteryLabelFontStyle, btnFontStyle, labelFontStyle, combFontStyle, txtFontStyle;
-        static Font winnerMessageFontStyle, winnerListLabelFontStyle, authorLabFontStyle;
+        static Font winnerMessageFontStyle, winnerListLabelFontStyle, authorLabFontStyle, chBoxFontStyle;
         static Single fontDiameter;
 
         public static void loadFont()
@@ -67,6 +67,12 @@ namespace Lottery
         {
             authorLabFontStyle = new Font(prc.Families[0], 32 * fontDiameter, FontStyle.Bold);
             return authorLabFontStyle;
+        }
+
+        public static Font getchBoxFontStyle()
+        {
+            chBoxFontStyle = new Font(prc.Families[0], 12 * fontDiameter, FontStyle.Regular);
+            return chBoxFontStyle;
         }
 
 

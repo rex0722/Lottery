@@ -43,29 +43,32 @@ namespace Lottery
         public static string deleteCommand = "DELETE FROM record";
 
         public static string resetWarning = "此操作會刪除所有抽獎紀錄\n若確定要執行，請輸入密碼";
+        public static string clean_database_dialog = "確定要清除中獎名單的資料嗎?";
         public static string resetPassword = "12345678";
         public static string passwordCorrect = "密碼正確";
         public static string passwordError = "密碼錯誤";
+        public static string tips_buttonstart = "請更換獎項或是勾選重複抽獎";
 
-        public static string messageBoxWarningTitle = "注意";
-        public static string messageBoxInformationTitle = "通知";
-        public static string messageBoxErrorTitle = "錯誤";
+        public static string messagebox_warning_title = "注意";
+        public static string messagebox_information_title = "通知";
+        public static string messagebox_error_title = "錯誤";
 
-        public static string turnOnBackgrounMusic = "開啟背景音效";
-        public static string turnOffBackgrounMusic = "停止背景音效";
-        public static string normalBackgroundMusic = "../../Music/Happy.mp3";
-        public static string selectingBackgroundMusic = "../../Music/Beat.mp3";
-        public static string winnerBackgroundMusic = "../../Music/Colonel_Bogey_March.mp3";
+        public static string turn_on_background_music = "開啟背景音效";
+        public static string turn_off_background_music = "停止背景音效";
+        public static string normal_background_music = "../../Music/Happy.mp3";
+        public static string selecting_background_music = "../../Music/Beat.mp3";
+        public static string winner_background_music = "../../Music/Colonel_Bogey_March.mp3";
 
-        public static string turnOffLotteryProgram = "確定要關閉抽獎程式?";
-        public static string lotteryError1 = "可抽獎人數剩 1 位\n不需要抽獎了！";
-        public static string lotteryError2 = "抽獎次數大於可抽獎的人數了！";
+        public static string turn_off_lottery_program = "確定要關閉抽獎程式?";
+        public static string lottery_error1 = "已經沒有人可供抽獎了！"; 
+        public static string lottery_error2 = "抽獎次數大於可抽獎的人數了！";
 
         public static string prizeItemsDuplicate = "已經抽過了\n是否再抽一次?";
         public static string resetList = "中獎名單內已有先前紀錄，開始抽獎會將先前紀錄清除\n請問是否開始抽獎?";
 
         public static string ipAddress = "本機的 IP 位址為: ";
-        public static string socketServiceTurnOnSuccess = "遠端控制功能已成功開啟！";
+        public static string socket_service_turn_on_success = "遠端控制功能已成功開啟！";
         public static string start_lottery_keyword = "start";
+        public static string connect_error = "請確認電腦網路是否開啟並且與手機連線";
     }
 }

@@ -23,7 +23,7 @@ namespace Lottery
 
         const int firstTop = 1001, firstRight = 1002, firstBottom = 1003, firstLeft = 1004;
         const int secondTop = 2001, secondRight = 2002, secondBottom = 2003, secondLeft = 2004;
-        int perviousID = 0, currentID = 0, lotteryCount = 0;
+        int perviousID = 0, currentID = 0, lotteryCount = 0, winnerCount;
         int offsetX = 0, offsetY = 0, rowCount = 0, initailX, initailY, heightInterval = 10, widthInterval = 25;
         int firstRoundCountMaximum = 15, secondRoundCountMaximum = 10; 
         int panelWidth = 0, panelHeight = 0, labelWidth = 35, labelHeight = 35;
@@ -41,6 +41,7 @@ namespace Lottery
         Label[] labelSet = new Label[100];
         List<int> selectItem = new List<int>();
         List<string> recordWinner = new List<string>();
+        List<string> recordPrize = new List<string>();
         List<Label> tempTagWinner = new List<Label>();
 
         WinnerMessage winnerMessage = new WinnerMessage();
@@ -49,6 +50,7 @@ namespace Lottery
         const int listenPort = 3456;
         Socket serverSocket;
         IPAddress[] ips = Dns.GetHostAddresses("");
+        string localIpAddress;
 
         public MainForm()
         {
@@ -66,9 +68,16 @@ namespace Lottery
             initialUnitLocation();
             backgroundSoundOutput();
             labelCreate();
+            loadLocalIpAddress();
             winnerMessage.ShowDialog();
             Control.CheckForIllegalCrossThreadCalls = false;
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            //if (!isDatabaseEmpty())
+            //{
+            //    btnStart.Enabled = false;
+            //    btnCleanDatabase.Enabled = true;
+            //}
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -84,17 +93,21 @@ namespace Lottery
                 serverSocket.Bind(ipont);
                 serverSocket.Listen(10);
 
-                new Thread(new ThreadStart(serverWaitConnect)).Start();
+                new Thread(new ThreadStart(serverWaitingConnect)).Start();
                 isSocketCreate = true;
             }
 
-            MessageBox.Show(Strings.ipAddress + ips[3].ToString() + Strings.nextLine + Strings.socketServiceTurnOnSuccess,
-                Strings.messageBoxInformationTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if(localIpAddress.Equals("") || localIpAddress == null)
+            {
+                MessageBox.Show(Strings.connect_error, Strings.messagebox_error_title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }else
+                MessageBox.Show(Strings.ipAddress + localIpAddress + Strings.nextLine + Strings.socket_service_turn_on_success,
+                    Strings.messagebox_information_title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void CloseProgramMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show(Strings.turnOffLotteryProgram, Strings.messageBoxInformationTitle,
+            DialogResult result = MessageBox.Show(Strings.turn_off_lottery_program, Strings.messagebox_information_title,
             MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if (result == DialogResult.OK)
             {
@@ -111,6 +124,7 @@ namespace Lottery
             timerChangeColor.Enabled = false;
             totalParticipant--;
             lotteryCount--;
+            winnerCount++;
             tempTagWinner.Add(labelSet[selectItem[currentID]]);
             recordWinner.Add(labelSet[selectItem[currentID]].Text);
 
@@ -123,15 +137,19 @@ namespace Lottery
                 timerLottery.Start();
                 timerChangeColor.Start();
                 combCount.Text = lotteryCount.ToString();
+                labWinnerCount.Text = winnerCount.ToString();
             }
             else
             {
                 dataInsert();
-                btnStart.Enabled = true;
+                prizeDuplicateCheck();
+                combPrize.Enabled = true;
+                btnStart.Focus();
                 winnerMessage.winnerList = recordWinner;
+                isLotteryRunning = false;
+                labWinnerCount.Text = winnerCount.ToString();
                 winnerMessage.ShowDialog();
                 recordWinner.Clear();
-                isLotteryRunning = false;
             }
         }
 
@@ -150,9 +168,137 @@ namespace Lottery
             wl.ShowDialog();
         }
 
+        private void btnCleanDatabase_Click(object sender, EventArgs e)
+        {
+            DialogResult result;
+            result = MessageBox.Show(Strings.clean_database_dialog, Strings.messagebox_information_title, MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+
+            if(result == DialogResult.OK)
+            {
+                clearDatabase();
+                btnStart.Enabled = true;
+                btnCleanDatabase.Enabled = false;
+            }
+        }
+
         private void btnStart_Click(object sender, EventArgs e)
         {
             lotteryFunction();
+        }
+
+        private void combPrize_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            prizeDuplicateCheck();
+        }
+
+        private void chBoxRepeat_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chBoxRepeat.Checked)
+                btnStart.Enabled = true;
+            else
+                prizeDuplicateCheck();
+        }
+
+        private void initialUnitSetting()
+        {
+            panel.Width = this.Width;
+            panel.Height = this.Height;
+            panelWidth = panel.Width;
+            panelHeight = panel.Height;
+            panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+
+            labAuthor.Text = Strings.author;
+            labAuthor.Parent = panel;
+            labAuthor.BackColor = Color.Transparent;
+            labAuthor.ForeColor = Color.Gold;         
+
+            picLeft.Parent = panel;
+            labWinnerCount.Text = winnerCount.ToString();
+        }
+
+        private void initialUnitFont()
+        {
+            combPrize.Font = FontSet.getTxtFontStyle();
+            labSelectTimes.Font = FontSet.getLabelFontStyle();
+            combCount.Font = FontSet.getTxtFontStyle();
+            btnStart.Font = FontSet.getBtnFontStyle();
+            btnList.Font = FontSet.getBtnFontStyle();
+            btnCleanDatabase.Font = FontSet.getBtnFontStyle();
+            labAuthor.Font = FontSet.getAuthorLabFontStyle();
+            labWinner.Font = FontSet.getLabelFontStyle();
+            labWinnerCount.Font = FontSet.getLabelFontStyle();
+            labHuman.Font = FontSet.getLabelFontStyle();
+            chBoxRepeat.Font = FontSet.getchBoxFontStyle();
+        }
+
+        private void initialUnitLocation()
+        {
+            panel.Location = new Point(0, 0);
+            labSelectTimes.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.25));
+            combCount.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.28));
+            combPrize.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.35));
+            chBoxRepeat.Location = new Point(Convert.ToInt32(panelWidth * 0.935), Convert.ToInt32(panelHeight * 0.40));
+            btnStart.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.45));
+            btnList.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.58));
+            btnCleanDatabase.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.63));
+            labWinner.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.68));
+            labWinnerCount.Location = new Point(Convert.ToInt32(panelWidth * 0.94), Convert.ToInt32(panelHeight * 0.71));
+            labHuman.Location = new Point(Convert.ToInt32(panelWidth * 0.97), Convert.ToInt32(panelHeight * 0.71));
+            labAuthor.Location = new Point(Convert.ToInt32(panelWidth * 0.28), Convert.ToInt32(panelHeight * 0.45));
+            picLeft.Location = new Point(Convert.ToInt32(panelWidth * 0.02), Convert.ToInt32(panelHeight * 0.5));
+        }
+
+        private void initialSize()
+        {
+            diameterWidth = this.Width / defaultWidth;
+            diameterHeight = this.Height / defaultHeight;
+
+            initailX = Convert.ToInt32(defaultWidth * 0.203 * diameterWidth);
+            initailY = Convert.ToInt32(defaultHeight * 0.035 * diameterHeight);
+
+            labelWidth = Convert.ToInt32(labelWidth * diameterWidth);
+            labelHeight = Convert.ToInt32(labelHeight * diameterHeight);
+
+            widthInterval = Convert.ToInt32(widthInterval * diameterWidth);
+            heightInterval = Convert.ToInt32(heightInterval * diameterHeight);
+
+            combPrize.Width = Convert.ToInt32(Convert.ToDouble(combPrize.Width) * diameterWidth);
+            combPrize.Height = Convert.ToInt32(Convert.ToDouble(combPrize.Height) * diameterHeight);
+            combCount.Width = Convert.ToInt32(Convert.ToDouble(combCount.Width) * diameterWidth);
+            combCount.Height = Convert.ToInt32(Convert.ToDouble(combCount.Height) * diameterHeight);
+            labSelectTimes.Width = Convert.ToInt32(Convert.ToDouble(labSelectTimes.Width) * diameterWidth);
+            labSelectTimes.Height = Convert.ToInt32(Convert.ToDouble(labSelectTimes.Height) * diameterHeight);
+            btnStart.Width = Convert.ToInt32(Convert.ToDouble(btnStart.Width) * diameterWidth);
+            btnStart.Height = Convert.ToInt32(Convert.ToDouble(btnStart.Height) * diameterHeight);
+            btnList.Width = Convert.ToInt32(Convert.ToDouble(btnList.Width) * diameterWidth);
+            btnList.Height = Convert.ToInt32(Convert.ToDouble(btnList.Height) * diameterHeight);
+            btnCleanDatabase.Width = Convert.ToInt32(Convert.ToDouble(btnCleanDatabase.Width) * diameterWidth);
+            btnCleanDatabase.Height = Convert.ToInt32(Convert.ToDouble(btnCleanDatabase.Height) * diameterHeight);
+            picLeft.Width = Convert.ToInt32(Convert.ToDouble(picLeft.Width) * diameterWidth);
+            picLeft.Height = Convert.ToInt32(Convert.ToDouble(picLeft.Height) * diameterHeight);
+            labHuman.Width = Convert.ToInt32(Convert.ToDouble(labHuman.Width) * diameterWidth);
+            labHuman.Height = Convert.ToInt32(Convert.ToDouble(labHuman.Height) * diameterHeight);
+            labWinnerCount.Width = Convert.ToInt32(Convert.ToDouble(labWinnerCount.Width) * diameterWidth);
+            labWinnerCount.Height = Convert.ToInt32(Convert.ToDouble(labWinnerCount.Height) * diameterHeight);
+            labWinner.Width = Convert.ToInt32(Convert.ToDouble(labWinner.Width) * diameterWidth);
+            labWinner.Height = Convert.ToInt32(Convert.ToDouble(labWinner.Height) * diameterHeight);
+            chBoxRepeat.Width = Convert.ToInt32(Convert.ToDouble(chBoxRepeat.Width) * diameterWidth);
+            chBoxRepeat.Height = Convert.ToInt32(Convert.ToDouble(chBoxRepeat.Height) * diameterHeight);
+        }
+
+        private void loadComboboxData()
+        {
+            for (int i = 0; i < Strings.comboxItem.Length; i++)
+            {
+                combPrize.Items.Add(Strings.comboxItem[i]);
+            }
+            combPrize.Text = combPrize.Items[0].ToString();
+
+            for (int j = 0; j < Strings.lotteryCountList.Length; j++)
+            {
+                combCount.Items.Add(Strings.lotteryCountList[j]);
+            }
+            combCount.Text = combCount.Items[0].ToString();
         }
 
         private void labelCreate()
@@ -273,178 +419,18 @@ namespace Lottery
             }
         }
 
-        private void tagWinner(List<Label> list)
-        {
-            for(int i = 0; i < list.Count; i++) 
-                list[i].BackColor = Color.Gold;
-        }
-
-        private void selectedFinish()
-        {
-            selectItem.RemoveAt(perviousID);
-            if (totalParticipant > 0)
-            {
-                Random perviousRan = new Random();
-                perviousID = perviousRan.Next(0, totalParticipant);
-            }
-        }
-
-        public static void backgroundSoundOutput()
-        {
-            MusicPlayer musicPlayer = new MusicPlayer();
-            musicPlayer.FileName = Strings.normalBackgroundMusic;
-            musicPlayer.Play();
-        }
-
-        public static void selectingSoundOutput()
-        {
-            MusicPlayer musicPlayer = new MusicPlayer();
-            musicPlayer.FileName = Strings.selectingBackgroundMusic;
-            musicPlayer.Play();
-        }
-
-        public static void selectedFinishSoundOutput()
-        {
-            MusicPlayer musicPlayer = new MusicPlayer();
-            musicPlayer.FileName = Strings.winnerBackgroundMusic;
-            musicPlayer.Play();
-        }
-
-        private void dataInsert()
-        {
-            myConn = new OleDbConnection(strConn);
-            myConn.Open();
-            for(int i = 0; i < recordWinner.Count; i++)
-            {
-                insertCmd = "INSERT INTO record(獎項,中獎人) VALUES('"+combPrize.Text+"','" + recordWinner[i] +"')";
-                Cmd = new OleDbCommand(insertCmd, myConn);
-                Cmd.ExecuteNonQuery();
-            }
-            myConn.Close();
-        }
-
-        private bool isDatabaseEmpty()
-        {
-            bool result;
-            OleDbConnection myConn = new OleDbConnection(Strings.databasePath);
-            myConn.Open();
-
-            OleDbCommand Cmd = new OleDbCommand(Strings.selectCommand, myConn);
-            OleDbDataReader reader = Cmd.ExecuteReader();
-
-            if (reader.Read())
-            {
-                result = false;
-            }
-            else
-            {
-                result = true;
-            }
-            reader.Close();
-            myConn.Close();
-
-            return result;
-        }
-
-        private void clearDatabase()
-        {
-            OleDbConnection myConn = new OleDbConnection(Strings.databasePath);
-            myConn.Open();
-
-            OleDbCommand Cmd = new OleDbCommand(Strings.deleteCommand, myConn);
-            Cmd.ExecuteNonQuery();
-            myConn.Close();  
-        }
-
-        private void loadComboboxData()
-        {
-            for(int i = 0; i < Strings.comboxItem.Length; i++)
-            {
-                combPrize.Items.Add(Strings.comboxItem[i]);
-            }
-            combPrize.Text = combPrize.Items[0].ToString();
-
-            for (int j = 0; j < Strings.lotteryCountList.Length; j++)
-            {
-                combCount.Items.Add(Strings.lotteryCountList[j]);
-            }
-            combCount.Text = combCount.Items[0].ToString();
-        }
-
-        private void initialUnitSetting()
-        {
-            panel.Width = this.Width;
-            panel.Height = this.Height;
-            panelWidth = panel.Width;
-            panelHeight = panel.Height;
-            panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-
-            labAuthor.Text = Strings.author;
-            labAuthor.Parent = panel;
-            labAuthor.BackColor = Color.Transparent;
-            labAuthor.ForeColor = Color.Gold;         
-
-            picLeft.Parent = panel;
-        }
-
-        private void initialUnitFont()
-        {
-            combPrize.Font = FontSet.getCombFontStyle();
-            labSelectTimes.Font = FontSet.getLabelFontStyle();
-            combCount.Font = FontSet.getTxtFontStyle();
-            btnStart.Font = FontSet.getBtnFontStyle();
-            btnList.Font = FontSet.getBtnFontStyle();
-            labAuthor.Font = FontSet.getAuthorLabFontStyle();
-        }
-
-        private void initialUnitLocation()
-        {
-            panel.Location = new Point(0, 0);
-            labSelectTimes.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.25));
-            combCount.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.30));
-            combPrize.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.35));
-            btnStart.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.40));
-            btnList.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.53));
-            labAuthor.Location = new Point(Convert.ToInt32(panelWidth * 0.28), Convert.ToInt32(panelHeight * 0.45));
-            picLeft.Location = new Point(Convert.ToInt32(panelWidth * 0.02), Convert.ToInt32(panelHeight * 0.5));
-        }
-
-        private void initialSize()
-        {
-            diameterWidth = this.Width / defaultWidth;
-            diameterHeight = this.Height / defaultHeight;
-
-            initailX = Convert.ToInt32(defaultWidth * 0.203 * diameterWidth);
-            initailY = Convert.ToInt32(defaultHeight * 0.035 * diameterHeight);
-
-            labelWidth = Convert.ToInt32(labelWidth * diameterWidth);
-            labelHeight = Convert.ToInt32(labelHeight * diameterHeight);
-
-            widthInterval = Convert.ToInt32(widthInterval * diameterWidth);
-            heightInterval = Convert.ToInt32(heightInterval * diameterHeight);
-
-            combPrize.Width = Convert.ToInt32(Convert.ToDouble(combPrize.Width) * diameterWidth);
-            combPrize.Height = Convert.ToInt32(Convert.ToDouble(combPrize.Height) * diameterHeight);
-            combCount.Width = Convert.ToInt32(Convert.ToDouble(combCount.Width) * diameterWidth);
-            combCount.Height = Convert.ToInt32(Convert.ToDouble(combCount.Height) * diameterHeight);
-            labSelectTimes.Width = Convert.ToInt32(Convert.ToDouble(labSelectTimes.Width) * diameterWidth);
-            labSelectTimes.Height = Convert.ToInt32(Convert.ToDouble(labSelectTimes.Height) * diameterHeight);
-            btnStart.Width = Convert.ToInt32(Convert.ToDouble(btnStart.Width) * diameterWidth);
-            btnStart.Height = Convert.ToInt32(Convert.ToDouble(btnStart.Height) * diameterHeight);
-            btnList.Width = Convert.ToInt32(Convert.ToDouble(btnList.Width) * diameterWidth);
-            btnList.Height = Convert.ToInt32(Convert.ToDouble(btnList.Height) * diameterHeight);
-            picLeft.Width = Convert.ToInt32(Convert.ToDouble(picLeft.Width) * diameterWidth);
-            picLeft.Height = Convert.ToInt32(Convert.ToDouble(picLeft.Height) * diameterHeight);
-        }
-
         public void lotteryFunction()
         {
             lotteryCount = int.Parse(combCount.Text);
+            recordPrize.Add(combPrize.Text);
+            chBoxRepeat.Checked = false;
+            chBoxRepeat.Enabled = false;
+            combPrize.Enabled = false;
 
             if (isFirst && !isDatabaseEmpty())
             {
                 DialogResult record;
-                record = MessageBox.Show(Strings.resetList, Strings.messageBoxInformationTitle, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                record = MessageBox.Show(Strings.resetList, Strings.messagebox_information_title, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (record == DialogResult.OK)
                 {
                     clearDatabase();
@@ -456,7 +442,7 @@ namespace Lottery
                 if (perviousPrizeItem.Equals(combPrize.Text))
                 {
                     DialogResult result;
-                    result = MessageBox.Show(combPrize.Text + Strings.prizeItemsDuplicate, Strings.messageBoxInformationTitle, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                    result = MessageBox.Show(combPrize.Text + Strings.prizeItemsDuplicate, Strings.messagebox_information_title, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                     if (result == DialogResult.OK)
                     {
                         startLottery();
@@ -469,14 +455,34 @@ namespace Lottery
 
         private void startLottery()
         {
+            if(totalParticipant == 0)
+            {
+                MessageBox.Show(Strings.lottery_error1, Strings.messagebox_warning_title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-            if (totalParticipant <= 1)
-            {
-                MessageBox.Show(Strings.lotteryError1, Strings.messageBoxWarningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-            else if (lotteryCount >= totalParticipant)
+            else if (lotteryCount > totalParticipant)
             {
-                MessageBox.Show(Strings.lotteryError2, Strings.messageBoxWarningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(Strings.lottery_error2, Strings.messagebox_warning_title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else if (lotteryCount == totalParticipant)
+            {
+                totalParticipant -= lotteryCount;
+                winnerCount += lotteryCount;
+                tagWinner(tempTagWinner);
+                tempTagWinner.Clear();
+                selectedFinish();
+
+                foreach (int i in selectItem)
+                {
+                    tempTagWinner.Add(labelSet[i]);
+                    recordWinner.Add(labelSet[i].Text);
+                }
+
+                winnerMessage.winnerList = recordWinner;
+                labWinnerCount.Text = winnerCount.ToString();
+                winnerMessage.ShowDialog();
+                tagWinner(tempTagWinner);
+                tempTagWinner.Clear();
             }
             else
             {
@@ -493,7 +499,6 @@ namespace Lottery
                 timerLottery.Interval = (time.Next(0, 4) + 2) * 1000;
                 timerLottery.Start();
                 timerChangeColor.Start();
-
                 btnStart.Enabled = false;
                 isLotteryRunning = true;
                 perviousPrizeItem = combPrize.Text;
@@ -502,7 +507,56 @@ namespace Lottery
 
         }
 
-        private void serverWaitConnect()
+        private void tagWinner(List<Label> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+                list[i].BackColor = Color.Gold;
+        }
+
+        private void selectedFinish()
+        {
+            selectItem.RemoveAt(perviousID);
+            if (totalParticipant > 0)
+            {
+                Random perviousRan = new Random();
+                perviousID = perviousRan.Next(0, totalParticipant);
+            }
+        }
+
+        public static void backgroundSoundOutput()
+        {
+            MusicPlayer musicPlayer = new MusicPlayer();
+            musicPlayer.FileName = Strings.normal_background_music;
+            musicPlayer.Play();
+        }
+
+        public static void selectingSoundOutput()
+        {
+            MusicPlayer musicPlayer = new MusicPlayer();
+            musicPlayer.FileName = Strings.selecting_background_music;
+            musicPlayer.Play();
+        }
+
+        public static void selectedFinishSoundOutput()
+        {
+            MusicPlayer musicPlayer = new MusicPlayer();
+            musicPlayer.FileName = Strings.winner_background_music;
+            musicPlayer.Play();
+        }
+
+        private void loadLocalIpAddress()
+        {
+            foreach (IPAddress i in ips)
+            {
+                if (i.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIpAddress = i.ToString();
+                    break;
+                }
+            }
+        }
+
+        private void serverWaitingConnect()
         {
             while (true)
             {
@@ -517,6 +571,69 @@ namespace Lottery
                 }
                 else
                     clientSocket.Close();
+            }
+
+        }
+
+        private void dataInsert()
+        {
+            myConn = new OleDbConnection(strConn);
+            myConn.Open();
+            for (int i = 0; i < recordWinner.Count; i++)
+            {
+                insertCmd = "INSERT INTO record(獎項,中獎人) VALUES('" + combPrize.Text + "','" + recordWinner[i] + "')";
+                Cmd = new OleDbCommand(insertCmd, myConn);
+                Cmd.ExecuteNonQuery();
+            }
+            myConn.Close();
+        }
+
+        private bool isDatabaseEmpty()
+        {
+            bool result;
+            OleDbConnection myConn = new OleDbConnection(Strings.databasePath);
+            myConn.Open();
+
+            OleDbCommand Cmd = new OleDbCommand(Strings.selectCommand, myConn);
+            OleDbDataReader reader = Cmd.ExecuteReader();
+
+            if (reader.Read())
+                result = false;
+            else
+                result = true;
+
+            reader.Close();
+            myConn.Close();
+
+            return result;
+        }
+
+        private void clearDatabase()
+        {
+            OleDbConnection myConn = new OleDbConnection(Strings.databasePath);
+            myConn.Open();
+
+            OleDbCommand Cmd = new OleDbCommand(Strings.deleteCommand, myConn);
+            Cmd.ExecuteNonQuery();
+            myConn.Close();
+        }
+
+        private void prizeDuplicateCheck()
+        {
+            foreach (string text in recordPrize)
+            {
+                if (combPrize.Text.Equals(text))
+                {
+                    btnStart.Enabled = false;
+                    chBoxRepeat.Enabled = true;
+                    break;
+                }
+                else
+                {
+                    btnStart.Enabled = true;
+                    chBoxRepeat.Checked = false;
+                    chBoxRepeat.Enabled = false;
+                }
             }
 
         }

@@ -23,8 +23,8 @@ namespace Lottery
         }
 
         private void WinnerMessage_Load(object sender, EventArgs e)
-        {
-            picBoxBack.Focus();
+        {      
+
             if (isFirst)
             {
                 this.Width = Convert.ToInt32(this.Width * MainForm.mainForm.diameterWidth);
@@ -33,13 +33,19 @@ namespace Lottery
                 this.Close();
             }
             else
+            {
                 MainForm.selectedFinishSoundOutput();
+                initialUnit();
+                for (int i = 0; i < winnerList.Count; i++)
+                    labWinner.Text += winnerList[i] + Strings.nextLine;
 
-            initialUnit();
-            for (int i = 0; i < winnerList.Count; i++)
-                labWinner.Text += winnerList[i] + Strings.nextLine;
+                winnerList.Clear();
 
-            winnerList.Clear();
+
+                WindowEffect.AnimateWindow(this.Handle, 2000, WindowEffect.AW_HIDE | WindowEffect.AW_CENTER);
+                picBoxBack.Focus();
+            }
+                
         }
 
         private void initialUnit()
