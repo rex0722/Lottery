@@ -47,6 +47,7 @@
             this.label1.Size = new System.Drawing.Size(156, 64);
             this.label1.TabIndex = 0;
             this.label1.Text = "恭喜";
+            this.label1.Click += new System.EventHandler(this.picBoxBack_Click);
             // 
             // labWinner
             // 
@@ -57,6 +58,7 @@
             this.labWinner.Name = "labWinner";
             this.labWinner.Size = new System.Drawing.Size(0, 96);
             this.labWinner.TabIndex = 1;
+            this.labWinner.Click += new System.EventHandler(this.picBoxBack_Click);
             // 
             // label2
             // 
@@ -68,6 +70,7 @@
             this.label2.Size = new System.Drawing.Size(176, 64);
             this.label2.TabIndex = 2;
             this.label2.Text = "中獎!";
+            this.label2.Click += new System.EventHandler(this.picBoxBack_Click);
             // 
             // picBoxBack
             // 
@@ -88,7 +91,7 @@
             this.btnClose.TabIndex = 4;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.btnClose.Click += new System.EventHandler(this.picBoxBack_Click);
             // 
             // WinnerMessage
             // 
@@ -96,6 +99,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(700, 500);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.picBoxBack);

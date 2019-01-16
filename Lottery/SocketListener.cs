@@ -26,10 +26,10 @@ namespace Lottery
                 int datalenght = socket.Receive(data);
                 if (datalenght == 0) break;
                 string input = Encoding.UTF8.GetString(data, 0, datalenght);
-                if (input.Equals(Strings.start_lottery_keyword))
+                if (input.Equals(Strings.start_lottery_keyword) && MainForm.buttonStartEnable)
                 {
                     Console.WriteLine("Lottery Start!!");
-                    startLotteryDelegate sld = new startLotteryDelegate(MainForm.mainForm.lotteryFunction);
+                    startLotteryDelegate sld = new startLotteryDelegate(MainForm.mainForm.startLottery);
                     MainForm.mainForm.BeginInvoke(sld);
                 }
                     

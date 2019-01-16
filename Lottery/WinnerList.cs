@@ -20,10 +20,7 @@ namespace Lottery
 
         private void WinnerList_Load(object sender, EventArgs e)
         {
-            //loadRecordItem();
             loadData();
-            //setUnitFontStyle();
-            //labRecordIndex.Text = Lottery.Properties.Settings.Default.Times.ToString();
         }
 
         private void loadData()
@@ -49,25 +46,6 @@ namespace Lottery
             myConn.Close();
         }
 
-        private void setUnitFontStyle()
-        {
-            /*
-            labRecordText.Font = FontSet.getWinnerListLabelFontStyle();
-            labRecordIndex.Font = FontSet.getWinnerListLabelFontStyle();
-            labPastRecordText.Font = FontSet.getWinnerListLabelFontStyle();
-            combRecordItem.Font = FontSet.getWinnerListLabelFontStyle();
-            btnSelect.Font = FontSet.getWinnerListLabelFontStyle();
-            */
-        }
-
-        private void loadRecordItem()
-        {
-          /*  for (int i = 1; i <= Lottery.Properties.Settings.Default.Times; i++)
-                combRecordItem.Items.Add(i);
-
-            combRecordItem.Text = combRecordItem.Items[Convert.ToInt32(combRecordItem.Items.Count - 1)].ToString();
-            */
-        }
 
     }
 }

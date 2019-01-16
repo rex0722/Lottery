@@ -48,7 +48,6 @@
             this.labWinner = new System.Windows.Forms.Label();
             this.labHuman = new System.Windows.Forms.Label();
             this.labWinnerCount = new System.Windows.Forms.Label();
-            this.btnCleanDatabase = new System.Windows.Forms.Button();
             this.chBoxRepeat = new System.Windows.Forms.CheckBox();
             this.contextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLeft)).BeginInit();
@@ -214,18 +213,6 @@
             this.labWinnerCount.TabIndex = 14;
             this.labWinnerCount.Text = "人";
             // 
-            // btnCleanDatabase
-            // 
-            this.btnCleanDatabase.Enabled = false;
-            this.btnCleanDatabase.Font = new System.Drawing.Font("新細明體", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnCleanDatabase.Location = new System.Drawing.Point(921, 312);
-            this.btnCleanDatabase.Name = "btnCleanDatabase";
-            this.btnCleanDatabase.Size = new System.Drawing.Size(100, 28);
-            this.btnCleanDatabase.TabIndex = 15;
-            this.btnCleanDatabase.Text = "清除資料";
-            this.btnCleanDatabase.UseVisualStyleBackColor = true;
-            this.btnCleanDatabase.Click += new System.EventHandler(this.btnCleanDatabase_Click);
-            // 
             // chBoxRepeat
             // 
             this.chBoxRepeat.AutoSize = true;
@@ -248,7 +235,6 @@
             this.ClientSize = new System.Drawing.Size(1046, 742);
             this.ContextMenuStrip = this.contextMenu;
             this.Controls.Add(this.chBoxRepeat);
-            this.Controls.Add(this.btnCleanDatabase);
             this.Controls.Add(this.labWinnerCount);
             this.Controls.Add(this.labHuman);
             this.Controls.Add(this.labWinner);
@@ -269,6 +255,7 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.contextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picLeft)).EndInit();
             this.ResumeLayout(false);
@@ -296,7 +283,6 @@
         private System.Windows.Forms.Label labWinner;
         private System.Windows.Forms.Label labHuman;
         private System.Windows.Forms.Label labWinnerCount;
-        private System.Windows.Forms.Button btnCleanDatabase;
         private System.Windows.Forms.CheckBox chBoxRepeat;
     }
 }

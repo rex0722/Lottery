@@ -23,7 +23,8 @@ namespace Lottery
         }
 
         private void WinnerMessage_Load(object sender, EventArgs e)
-        {      
+        {
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 
             if (isFirst)
             {
@@ -40,12 +41,11 @@ namespace Lottery
                     labWinner.Text += winnerList[i] + Strings.nextLine;
 
                 winnerList.Clear();
-
-
-                WindowEffect.AnimateWindow(this.Handle, 2000, WindowEffect.AW_HIDE | WindowEffect.AW_CENTER);
-                picBoxBack.Focus();
-            }
                 
+                WindowEffect.AnimateWindow(this.Handle, 500, WindowEffect.AW_BLEND);
+                btnClose.Focus();
+            }
+
         }
 
         private void initialUnit()
@@ -75,13 +75,6 @@ namespace Lottery
         }
 
         private void picBoxBack_Click(object sender, EventArgs e)
-        {
-            this.Close();
-            labWinner.Text = "";
-            MainForm.backgroundSoundOutput();
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
             labWinner.Text = "";
