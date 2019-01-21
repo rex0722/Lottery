@@ -100,7 +100,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(700, 500);
+            this.ClientSize = new System.Drawing.Size(700, 530);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.picBoxBack);
             this.Controls.Add(this.label2);
@@ -109,7 +109,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "WinnerMessage";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "WinnerMessage";
             this.Load += new System.EventHandler(this.WinnerMessage_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picBoxBack)).EndInit();

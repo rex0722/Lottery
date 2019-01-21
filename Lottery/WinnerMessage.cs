@@ -14,7 +14,6 @@ namespace Lottery
     {
 
         bool isFirst = true;
-
         public List<string> winnerList = new List<string>();
 
         public WinnerMessage()
@@ -24,6 +23,8 @@ namespace Lottery
 
         private void WinnerMessage_Load(object sender, EventArgs e)
         {
+            this.Location = new Point(Convert.ToInt32(MainForm.panelWidth * 0.24), Convert.ToInt32(MainForm.panelHeight * 0.15));
+
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 
             if (isFirst)
@@ -41,9 +42,9 @@ namespace Lottery
                     labWinner.Text += winnerList[i] + Strings.nextLine;
 
                 winnerList.Clear();
-                
+
                 WindowEffect.AnimateWindow(this.Handle, 500, WindowEffect.AW_BLEND);
-                btnClose.Focus();
+                this.Focus();
             }
 
         }

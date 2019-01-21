@@ -23,7 +23,7 @@ namespace Lottery
 
         public static Font getLotteryLabelFontStyle()
         {
-            lotteryLabelFontStyle = new Font(prc.Families[0], 10 * fontDiameter, FontStyle.Regular);
+            lotteryLabelFontStyle = new Font("標楷體", 12 * fontDiameter, FontStyle.Regular);
             return lotteryLabelFontStyle;
         }
 
@@ -35,7 +35,7 @@ namespace Lottery
 
         public static Font getLabelFontStyle()
         {
-            labelFontStyle = new Font(prc.Families[0], 16 * fontDiameter, FontStyle.Regular);
+            labelFontStyle = new Font("微軟正黑體", 20 * fontDiameter, FontStyle.Bold);
             return labelFontStyle;
         }
 
@@ -53,7 +53,7 @@ namespace Lottery
 
         public static Font getWinnerMessageFontStyle()
         {
-            winnerMessageFontStyle = new Font(prc.Families[0], 48 * fontDiameter, FontStyle.Regular);
+            winnerMessageFontStyle = new Font(prc.Families[0], 50 * fontDiameter, FontStyle.Regular);
             return winnerMessageFontStyle;
         }
 
@@ -71,7 +71,7 @@ namespace Lottery
 
         public static Font getchBoxFontStyle()
         {
-            chBoxFontStyle = new Font(prc.Families[0], 12 * fontDiameter, FontStyle.Regular);
+            chBoxFontStyle = new Font("微軟正黑體", 12 * fontDiameter, FontStyle.Regular);
             return chBoxFontStyle;
         }
 

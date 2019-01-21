@@ -21,15 +21,15 @@ namespace Lottery
     {
         public static bool buttonStartEnable = true;
         bool isFirst = true, isFirstRound = true; 
-        bool isSocketCreate = false, isLotteryRunning = false;
+        bool isSocketCreate = false, isLotteryRunning = false, isMusicPlay = true;
 
         const int firstTop = 1001, firstRight = 1002, firstBottom = 1003, firstLeft = 1004;
         const int secondTop = 2001, secondRight = 2002, secondBottom = 2003, secondLeft = 2004;
         const int listenPort = 3456;
         int perviousID = 0, currentID = 0, lotteryCount = 0, winnerCount = 0;
-        int offsetX = 0, offsetY = 0, rowCount = 0, initailX, initailY, heightInterval = 10, widthInterval = 25;
+        int offsetX = 0, offsetY = 0, rowCount = 0, initailX, initailY, heightInterval = 6, widthInterval = 20;
         int firstRoundCountMaximum = 15, secondRoundCountMaximum = 10; 
-        int panelWidth = 0, panelHeight = 0, labelWidth = 35, labelHeight = 35;
+        public static int panelWidth = 0, panelHeight = 0, labelWidth = 40, labelHeight = 40;
         int totalParticipant = 100, currentSide = firstTop;
 
         const double defaultWidth = 1366, defaultHeight = 768;
@@ -55,7 +55,10 @@ namespace Lottery
     
         Socket serverSocket;
         IPAddress[] ips = Dns.GetHostAddresses("");
-        
+
+        static MusicPlayer musicPlayer;
+
+
 
         public MainForm()
         {
@@ -120,6 +123,27 @@ namespace Lottery
             }else
                 MessageBox.Show(Strings.socket_service_turn_on_success + Strings.ipAddress + localIpAddress,
                     Strings.messagebox_information_title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void MusicControlMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!isLotteryRunning)
+            {
+                if (isMusicPlay)
+                {
+                    isMusicPlay = false;
+                    musicPlayer.Stop();
+                    MusicControlMenuItem.Text = Strings.turn_on_backgrond_music;
+                }
+                else
+                {
+                    isMusicPlay = true;
+                    musicPlayer = new MusicPlayer();
+                    musicPlayer.FileName = Strings.normal_background_music;
+                    musicPlayer.Play();
+                    MusicControlMenuItem.Text = Strings.turn_off_backgrond_music;
+                }
+            }
         }
 
         private void CloseProgramMenuItem_Click(object sender, EventArgs e)
@@ -188,6 +212,8 @@ namespace Lottery
 
         private void btnStart_Click(object sender, EventArgs e)
         {
+            isMusicPlay = true;
+            MusicControlMenuItem.Text = Strings.turn_off_backgrond_music;
             startLottery();
         }
 
@@ -241,15 +267,15 @@ namespace Lottery
         private void initialUnitLocation()
         {
             panel.Location = new Point(0, 0);
-            labSelectTimes.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.25));
-            combCount.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.28));
-            combPrize.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.35));
-            chBoxRepeat.Location = new Point(Convert.ToInt32(panelWidth * 0.935), Convert.ToInt32(panelHeight * 0.40));
-            btnStart.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.45));
-            btnList.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.58));
-            labWinner.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.65));
-            labWinnerCount.Location = new Point(Convert.ToInt32(panelWidth * 0.94), Convert.ToInt32(panelHeight * 0.68));
-            labHuman.Location = new Point(Convert.ToInt32(panelWidth * 0.97), Convert.ToInt32(panelHeight * 0.68));
+            labSelectTimes.Location = new Point(Convert.ToInt32(panelWidth * 0.905), Convert.ToInt32(panelHeight * 0.25));
+            combCount.Location = new Point(Convert.ToInt32(panelWidth * 0.91), Convert.ToInt32(panelHeight * 0.30));
+            combPrize.Location = new Point(Convert.ToInt32(panelWidth * 0.91), Convert.ToInt32(panelHeight * 0.35));
+            chBoxRepeat.Location = new Point(Convert.ToInt32(panelWidth * 0.925), Convert.ToInt32(panelHeight * 0.40));
+            btnStart.Location = new Point(Convert.ToInt32(panelWidth * 0.91), Convert.ToInt32(panelHeight * 0.45));
+            btnList.Location = new Point(Convert.ToInt32(panelWidth * 0.91), Convert.ToInt32(panelHeight * 0.58));
+            labWinner.Location = new Point(Convert.ToInt32(panelWidth * 0.905), Convert.ToInt32(panelHeight * 0.65));
+            labWinnerCount.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.69));
+            labHuman.Location = new Point(Convert.ToInt32(panelWidth * 0.96), Convert.ToInt32(panelHeight * 0.69));
             labAuthor.Location = new Point(Convert.ToInt32(panelWidth * 0.28), Convert.ToInt32(panelHeight * 0.45));
             picLeft.Location = new Point(Convert.ToInt32(panelWidth * 0.02), Convert.ToInt32(panelHeight * 0.5));
         }
@@ -259,8 +285,8 @@ namespace Lottery
             diameterWidth = this.Width / defaultWidth;
             diameterHeight = this.Height / defaultHeight;
 
-            initailX = Convert.ToInt32(defaultWidth * 0.203 * diameterWidth);
-            initailY = Convert.ToInt32(defaultHeight * 0.035 * diameterHeight);
+            initailX = Convert.ToInt32(defaultWidth * 0.20 * diameterWidth);
+            initailY = Convert.ToInt32(defaultHeight * 0.030 * diameterHeight);
 
             labelWidth = Convert.ToInt32(labelWidth * diameterWidth);
             labelHeight = Convert.ToInt32(labelHeight * diameterHeight);
@@ -365,8 +391,8 @@ namespace Lottery
                                 initailY = Convert.ToInt32(defaultHeight * 0.09 * diameterHeight);
                                 offsetX = 0;
                                 offsetY = 0;
-                                widthInterval = Convert.ToInt32(43 * diameterWidth);
-                                heightInterval = Convert.ToInt32(23 * diameterHeight);
+                                widthInterval = Convert.ToInt32(37 * diameterWidth);
+                                heightInterval = Convert.ToInt32(19 * diameterHeight);
                             }
                             else
                                 offsetY -= labelSet[i].Height + heightInterval;
@@ -468,7 +494,7 @@ namespace Lottery
 
                 Random time = new Random();
 
-                timerLottery.Interval = (time.Next(0, 4) + 2) * 1000;
+                timerLottery.Interval = time.Next(1, 5) * 1000;
                 timerLottery.Start();
                 timerChangeColor.Start();
                 btnStart.Enabled = false;
@@ -498,21 +524,24 @@ namespace Lottery
 
         public static void backgroundSoundOutput()
         {
-            MusicPlayer musicPlayer = new MusicPlayer();
+            //MusicPlayer musicPlayer = new MusicPlayer();
+            musicPlayer = new MusicPlayer();
             musicPlayer.FileName = Strings.normal_background_music;
             musicPlayer.Play();
         }
 
         public static void selectingSoundOutput()
         {
-            MusicPlayer musicPlayer = new MusicPlayer();
+            //MusicPlayer musicPlayer = new MusicPlayer();
+            musicPlayer = new MusicPlayer();
             musicPlayer.FileName = Strings.selecting_background_music;
             musicPlayer.Play();
         }
 
         public static void selectedFinishSoundOutput()
         {
-            MusicPlayer musicPlayer = new MusicPlayer();
+            //MusicPlayer musicPlayer = new MusicPlayer();
+            musicPlayer = new MusicPlayer();
             musicPlayer.FileName = Strings.winner_background_music;
             musicPlayer.Play();
         }

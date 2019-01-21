@@ -49,6 +49,8 @@ namespace Lottery
         public static string normal_background_music = "../../Music/Happy.mp3";
         public static string selecting_background_music = "../../Music/Beat.mp3";
         public static string winner_background_music = "../../Music/Colonel_Bogey_March.mp3";
+        public static string turn_on_backgrond_music = "開啟背景音樂";
+        public static string turn_off_backgrond_music = "關閉背景音樂";
 
         public static string turn_off_lottery_program = "確定要關閉抽獎程式?";
         public static string lottery_error1 = "已經沒有人可供抽獎了！"; 
