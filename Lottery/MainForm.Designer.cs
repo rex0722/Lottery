@@ -45,11 +45,11 @@
             this.labAuthor = new System.Windows.Forms.Label();
             this.timerLottery = new System.Windows.Forms.Timer(this.components);
             this.timerChangeColor = new System.Windows.Forms.Timer(this.components);
-            this.picLeft = new System.Windows.Forms.PictureBox();
             this.labWinner = new System.Windows.Forms.Label();
             this.labHuman = new System.Windows.Forms.Label();
             this.labWinnerCount = new System.Windows.Forms.Label();
             this.chBoxRepeat = new System.Windows.Forms.CheckBox();
+            this.picLeft = new System.Windows.Forms.PictureBox();
             this.contextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLeft)).BeginInit();
             this.SuspendLayout();
@@ -115,7 +115,7 @@
             this.MusicControlMenuItem,
             this.CloseProgramMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(153, 92);
+            this.contextMenu.Size = new System.Drawing.Size(153, 70);
             // 
             // InternetControlMenuItem
             // 
@@ -176,17 +176,6 @@
             // 
             this.timerChangeColor.Tick += new System.EventHandler(this.timerChangeColor_Tick);
             // 
-            // picLeft
-            // 
-            this.picLeft.BackColor = System.Drawing.Color.Transparent;
-            this.picLeft.Image = ((System.Drawing.Image)(resources.GetObject("picLeft.Image")));
-            this.picLeft.Location = new System.Drawing.Point(12, 149);
-            this.picLeft.Name = "picLeft";
-            this.picLeft.Size = new System.Drawing.Size(160, 215);
-            this.picLeft.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picLeft.TabIndex = 11;
-            this.picLeft.TabStop = false;
-            // 
             // labWinner
             // 
             this.labWinner.AutoSize = true;
@@ -240,6 +229,16 @@
             this.chBoxRepeat.UseVisualStyleBackColor = true;
             this.chBoxRepeat.CheckedChanged += new System.EventHandler(this.chBoxRepeat_CheckedChanged);
             // 
+            // picLeft
+            // 
+            this.picLeft.Image = ((System.Drawing.Image)(resources.GetObject("picLeft.Image")));
+            this.picLeft.Location = new System.Drawing.Point(152, 33);
+            this.picLeft.Name = "picLeft";
+            this.picLeft.Size = new System.Drawing.Size(610, 340);
+            this.picLeft.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.picLeft.TabIndex = 18;
+            this.picLeft.TabStop = false;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnStart;
@@ -248,11 +247,11 @@
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1046, 742);
             this.ContextMenuStrip = this.contextMenu;
+            this.Controls.Add(this.picLeft);
             this.Controls.Add(this.chBoxRepeat);
             this.Controls.Add(this.labWinnerCount);
             this.Controls.Add(this.labHuman);
             this.Controls.Add(this.labWinner);
-            this.Controls.Add(this.picLeft);
             this.Controls.Add(this.labAuthor);
             this.Controls.Add(this.combCount);
             this.Controls.Add(this.btnList);
@@ -291,7 +290,6 @@
         private System.Windows.Forms.ToolStripMenuItem CloseProgramToolStripMenuItem1;
         private System.Windows.Forms.Timer timerLottery;
         private System.Windows.Forms.Timer timerChangeColor;
-        private System.Windows.Forms.PictureBox picLeft;
         private System.Windows.Forms.ToolStripMenuItem InternetControlMenuItem;
         private System.Windows.Forms.Label labWinner;
         private System.Windows.Forms.Label labHuman;
@@ -299,6 +297,7 @@
         private System.Windows.Forms.CheckBox chBoxRepeat;
         private System.Windows.Forms.ToolStripMenuItem MusicControlMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CloseProgramMenuItem;
+        private System.Windows.Forms.PictureBox picLeft;
     }
 }
 

@@ -20,17 +20,20 @@ namespace Lottery
     public partial class MainForm : Form
     {
         public static bool buttonStartEnable = true;
-        bool isFirst = true, isFirstRound = true; 
+        bool isFirst = true, isFirstRound = true, isSecondRound = true; 
         bool isSocketCreate = false, isLotteryRunning = false, isMusicPlay = true;
 
         const int firstTop = 1001, firstRight = 1002, firstBottom = 1003, firstLeft = 1004;
         const int secondTop = 2001, secondRight = 2002, secondBottom = 2003, secondLeft = 2004;
+        const int thirdTop = 3001, thirdRight = 3002, thirdBottom = 3003, thirdLeft = 3004;
         const int listenPort = 3456;
         int perviousID = 0, currentID = 0, lotteryCount = 0, winnerCount = 0;
         int offsetX = 0, offsetY = 0, rowCount = 0, initailX, initailY, heightInterval = 6, widthInterval = 20;
-        int firstRoundCountMaximum = 15, secondRoundCountMaximum = 10; 
-        public static int panelWidth = 0, panelHeight = 0, labelWidth = 40, labelHeight = 40;
-        int totalParticipant = 100, currentSide = firstTop;
+        int firstRoundColumnMaximum = 15, firstRoundRowMaximum = 15;
+        int secondRoundColumnMaximum = 11, secondRoundRowMaximum = 14;
+        int thirdRoundColumnMaximum = 10, thirdRoundRowMaximum = 11;
+        public static int panelWidth = 0, panelHeight = 0, labelWidth = 56, labelHeight = 40;
+        int totalParticipant = 152, currentSide = firstTop;
 
         const double defaultWidth = 1366, defaultHeight = 768;
         public double diameterWidth, diameterHeight;
@@ -42,7 +45,7 @@ namespace Lottery
         OleDbConnection myConn;
         OleDbCommand Cmd;
 
-        Label[] labelSet = new Label[100];
+        Label[] labelSet = new Label[Strings.lotteryLabelText.Length];
         List<int> selectItem = new List<int>();
         List<int> databaseWinnerIndex = new List<int>();
         List<string> databaseWinnerText = new List<string>();
@@ -171,7 +174,7 @@ namespace Lottery
 
             if (lotteryCount > 0)
             {
-                labelSet[selectItem[currentID]].BackColor = Color.White;
+                labelSet[selectItem[currentID]].BackColor = Color.Gold;//g
                 selectedFinish();
                 timerLottery.Enabled = true;
                 timerChangeColor.Enabled = true;
@@ -200,7 +203,7 @@ namespace Lottery
             Random random = new Random();
             currentID = random.Next(0, totalParticipant);
             labelSet[selectItem[perviousID]].BackColor = Color.Gray;
-            labelSet[selectItem[currentID]].BackColor = Color.White;
+            labelSet[selectItem[currentID]].BackColor = Color.Gold;//g
             perviousID = currentID;
         }
 
@@ -244,9 +247,9 @@ namespace Lottery
             labAuthor.Text = Strings.author;
             labAuthor.Parent = panel;
             labAuthor.BackColor = Color.Transparent;
-            labAuthor.ForeColor = Color.Gold;         
+            labAuthor.ForeColor = Color.Gold;//c         
 
-            picLeft.Parent = panel;
+            //picLeft.Parent = panel;
             labWinnerCount.Text = winnerCount.ToString();
         }
 
@@ -276,8 +279,8 @@ namespace Lottery
             labWinner.Location = new Point(Convert.ToInt32(panelWidth * 0.905), Convert.ToInt32(panelHeight * 0.65));
             labWinnerCount.Location = new Point(Convert.ToInt32(panelWidth * 0.92), Convert.ToInt32(panelHeight * 0.69));
             labHuman.Location = new Point(Convert.ToInt32(panelWidth * 0.96), Convert.ToInt32(panelHeight * 0.69));
-            labAuthor.Location = new Point(Convert.ToInt32(panelWidth * 0.28), Convert.ToInt32(panelHeight * 0.45));
-            picLeft.Location = new Point(Convert.ToInt32(panelWidth * 0.02), Convert.ToInt32(panelHeight * 0.5));
+            labAuthor.Location = new Point(Convert.ToInt32(panelWidth * 0.26), Convert.ToInt32(panelHeight * 0.7));
+            picLeft.Location = new Point(Convert.ToInt32(panelWidth * 0.24), Convert.ToInt32(panelHeight * 0.24));
         }
 
         private void initialSize()
@@ -285,8 +288,8 @@ namespace Lottery
             diameterWidth = this.Width / defaultWidth;
             diameterHeight = this.Height / defaultHeight;
 
-            initailX = Convert.ToInt32(defaultWidth * 0.20 * diameterWidth);
-            initailY = Convert.ToInt32(defaultHeight * 0.030 * diameterHeight);
+            initailX = Convert.ToInt32(defaultWidth * 0.08 * diameterWidth);       // First Round Initial X
+            initailY = Convert.ToInt32(defaultHeight * 0.030 * diameterHeight);    // First Round Initial Y
 
             labelWidth = Convert.ToInt32(labelWidth * diameterWidth);
             labelHeight = Convert.ToInt32(labelHeight * diameterHeight);
@@ -352,7 +355,7 @@ namespace Lottery
                     switch (currentSide)
                     {
                         case firstTop:
-                            if (rowCount >= firstRoundCountMaximum)
+                            if (rowCount >= firstRoundRowMaximum)
                             {
                                 rowCount = 0;
                                 currentSide = firstRight;
@@ -362,7 +365,7 @@ namespace Lottery
                                 offsetX += labelSet[i].Width + widthInterval;
                             break;
                         case firstRight:
-                            if (rowCount >= firstRoundCountMaximum)
+                            if (rowCount >= firstRoundColumnMaximum)
                             {
                                 rowCount = 0;
                                 currentSide = firstBottom;
@@ -372,7 +375,7 @@ namespace Lottery
                                 offsetY += labelSet[i].Height + heightInterval;
                             break;
                         case firstBottom:
-                            if (rowCount >= firstRoundCountMaximum)
+                            if (rowCount >= firstRoundRowMaximum)
                             {
                                 rowCount = 0;
                                 currentSide = firstLeft;
@@ -382,17 +385,17 @@ namespace Lottery
                                 offsetX -= labelSet[i].Width + widthInterval;
                             break;
                         case firstLeft:
-                            if (rowCount >= firstRoundCountMaximum)
+                            if (rowCount >= firstRoundColumnMaximum)
                             {
                                 rowCount = 0;
                                 currentSide = secondTop;
                                 isFirstRound = false;
-                                initailX = Convert.ToInt32(defaultWidth * 0.26 * diameterWidth);
-                                initailY = Convert.ToInt32(defaultHeight * 0.09 * diameterHeight);
+                                initailX = Convert.ToInt32(defaultWidth * 0.13 * diameterWidth);    // Second Round Initial X
+                                initailY = Convert.ToInt32(defaultHeight * 0.09 * diameterHeight);  // Second Round Initial Y
                                 offsetX = 0;
                                 offsetY = 0;
-                                widthInterval = Convert.ToInt32(37 * diameterWidth);
-                                heightInterval = Convert.ToInt32(19 * diameterHeight);
+                                widthInterval = Convert.ToInt32(15 * diameterWidth);
+                                heightInterval = Convert.ToInt32(14 * diameterHeight);
                             }
                             else
                                 offsetY -= labelSet[i].Height + heightInterval;
@@ -400,13 +403,13 @@ namespace Lottery
                     }
 
                 }
-                else
+                else if (isSecondRound)
                 {
                     switch (currentSide)
                     {
                         case secondTop:
 
-                            if (rowCount >= secondRoundCountMaximum)
+                            if (rowCount >= secondRoundRowMaximum)
                             {
                                 rowCount = 0;
                                 currentSide = secondRight;
@@ -417,7 +420,7 @@ namespace Lottery
                             break;
                         case secondRight:
 
-                            if (rowCount >= secondRoundCountMaximum)
+                            if (rowCount >= secondRoundColumnMaximum)
                             {
                                 rowCount = 0;
                                 currentSide = secondBottom;
@@ -427,7 +430,7 @@ namespace Lottery
                                 offsetY += labelSet[i].Height + heightInterval;
                             break;
                         case secondBottom:
-                            if (rowCount >= secondRoundCountMaximum)
+                            if (rowCount >= secondRoundRowMaximum)
                             {
                                 rowCount = 0;
                                 currentSide = secondLeft;
@@ -437,7 +440,61 @@ namespace Lottery
                                 offsetX -= labelSet[i].Width + widthInterval;
                             break;
                         case secondLeft:
-                            if (rowCount <= secondRoundCountMaximum)
+                            if (rowCount >= secondRoundColumnMaximum)
+                            {
+                                rowCount = 0;
+                                currentSide = thirdTop;
+                                isSecondRound = false;
+                                initailX = Convert.ToInt32(defaultWidth * 0.19 * diameterWidth);   // Third_Round_Initial_X
+                                initailY = Convert.ToInt32(defaultHeight * 0.15 * diameterHeight); // Third_Round_Initial_Y
+                                offsetX = 0;
+                                offsetY = 0;
+                                widthInterval = Convert.ToInt32(21 * diameterWidth);
+                                heightInterval = Convert.ToInt32(9 * diameterHeight);
+                            }
+                            else
+                                offsetY -= labelSet[i].Height + heightInterval;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (currentSide)
+                    {
+                        case thirdTop:
+
+                            if (rowCount >= thirdRoundRowMaximum)
+                            {
+                                rowCount = 0;
+                                currentSide = thirdRight;
+                                offsetY += labelSet[i].Height + heightInterval;
+                            }
+                            else
+                                offsetX += labelSet[i].Width + widthInterval;
+                            break;
+                        case thirdRight:
+
+                            if (rowCount >= thirdRoundColumnMaximum)
+                            {
+                                rowCount = 0;
+                                currentSide = thirdBottom;
+                                offsetX -= labelSet[i].Width + widthInterval;
+                            }
+                            else
+                                offsetY += labelSet[i].Height + heightInterval;
+                            break;
+                        case thirdBottom:
+                            if (rowCount >= thirdRoundRowMaximum)
+                            {
+                                rowCount = 0;
+                                currentSide = thirdLeft;
+                                offsetY -= labelSet[i].Height + heightInterval;
+                            }
+                            else
+                                offsetX -= labelSet[i].Width + widthInterval;
+                            break;
+                        case thirdLeft:
+                            if (rowCount <= thirdRoundColumnMaximum)
                             {
                                 offsetY -= labelSet[i].Height + heightInterval;
                             }
@@ -494,7 +551,8 @@ namespace Lottery
 
                 Random time = new Random();
 
-                timerLottery.Interval = time.Next(1, 5) * 1000;
+                //timerLottery.Interval = time.Next(1, 5) * 1000;
+                timerLottery.Interval = 5000;
                 timerLottery.Start();
                 timerChangeColor.Start();
                 btnStart.Enabled = false;
@@ -509,7 +567,7 @@ namespace Lottery
         private void tagWinner(List<Label> list)
         {
             for (int i = 0; i < list.Count; i++)
-                list[i].BackColor = Color.Gold;
+                list[i].BackColor = Color.White; //c
         }
 
         private void selectedFinish()
@@ -655,7 +713,7 @@ namespace Lottery
                 {
                     if (text.Equals(Strings.lotteryLabelText[i]))
                     {
-                        labelSet[i].BackColor = Color.Gold;
+                        labelSet[i].BackColor = Color.White;//c
                         databaseWinnerIndex.Add(i);
                     }
 

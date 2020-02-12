@@ -1,0 +1,12 @@
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\bin\Release\Record.mdb
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\bin\Release\Lottery.exe.config
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\bin\Release\Lottery.exe
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\bin\Release\Lottery.pdb
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\obj\Release\Lottery.csprojAssemblyReference.cache
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\obj\Release\Lottery.MainForm.resources
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\obj\Release\Lottery.Properties.Resources.resources
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\obj\Release\Lottery.WinnerList.resources
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\obj\Release\Lottery.WinnerMessage.resources
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\obj\Release\Lottery.csproj.GenerateResource.cache
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\obj\Release\Lottery.exe
+C:\Users\Administrator\Desktop\Lottery_V3.5.1\Lottery\obj\Release\Lottery.pdb

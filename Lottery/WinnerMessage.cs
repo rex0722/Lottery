@@ -52,15 +52,15 @@ namespace Lottery
         private void initialUnit()
         {
             label1.Font = FontSet.getWinnerMessageFontStyle();
-            label2.Font = FontSet.getWinnerMessageFontStyle();
+            //label2.Font = FontSet.getWinnerMessageFontStyle();
             labWinner.Font = FontSet.getWinnerMessageFontStyle();
 
             label1.Parent = picBoxBack;
-            label2.Parent = picBoxBack;
+            //label2.Parent = picBoxBack;
             labWinner.Parent = picBoxBack;
 
             label1.BackColor = Color.Transparent;
-            label2.BackColor = Color.Transparent;
+            //label2.BackColor = Color.Transparent;
             labWinner.BackColor = Color.Transparent;
 
             picBoxBack.Width = this.Width;
@@ -69,7 +69,7 @@ namespace Lottery
             picBoxBack.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 
             label1.Location = new Point(Convert.ToInt32(this.Width * 0.121), Convert.ToInt32(this.Height * 0.14));
-            label2.Location = new Point(Convert.ToInt32(this.Width * 0.73), Convert.ToInt32(this.Height * 0.5));
+            //label2.Location = new Point(Convert.ToInt32(this.Width * 0.73), Convert.ToInt32(this.Height * 0.5));
             labWinner.Location = new Point(Convert.ToInt32(this.Width * 0.3), Convert.ToInt32(this.Height * 0.28));
 
             btnClose.Location = new Point(this.Width, this.Height);
